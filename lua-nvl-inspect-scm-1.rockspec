@@ -14,7 +14,6 @@ description = {
 }
 dependencies = {
 	"lua >= 5.1",
-	"ltreesitter",
 }
 build = {
 	type = "builtin",
