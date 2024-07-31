@@ -1,3 +1,11 @@
+/scratch
+/build
+/.tmp
+
+*.swp
+/luacov.report.out
+/.ignore*
+
 # Compiled Lua sources
 luac.out
 
