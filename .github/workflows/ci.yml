@@ -13,18 +13,9 @@ jobs:
         rev: [nightly]
         lua-version: ["5.4"]
         luarocks-version: ["3.11.1"]
-        include:
-          - os: ubuntu-22.04
-            install-rg: sudo apt-get update && sudo apt-get install -y ripgrep
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install Neovim
-        uses: rhysd/action-setup-vim@v1
-        with:
-          neovim: true
-          version: ${{ matrix.rev }}
 
       - name: Install Lua
         uses: leafo/gh-actions-lua@master
