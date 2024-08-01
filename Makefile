@@ -52,7 +52,7 @@ deps: | $(HEREROCKS) $(BUSTED) $(LUAROCKS_DEPS)
 luarocks_deps: $(LUAROCKS_DEPS)
 
 coverage_dir:
-	mkdir $(COVERAGE)
+	[ ! -d "$(COVERAGE)" ] && mkdir "$(COVERAGE)" || exit 0
 
 test: test_lua test_nvim
 
