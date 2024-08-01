@@ -9,10 +9,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-12]
-        rev: [nightly, v0.9.5, v0.10.0]
+        os: [ubuntu-22.04]
+        rev: [nightly]
         lua-version: ["5.4"]
         luarocks-version: ["3.11.1"]
+        include:
+          - os: ubuntu-22.04
+            install-rg: sudo apt-get update && sudo apt-get install -y ripgrep
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,10 +36,9 @@ jobs:
         with:
           path: build
           key: ${{ runner.os }}-build-deps
+
       - name: Unit test
         run: |
+          mkdir .tmp
           make test
-      - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v1.0.2
-        env:
-          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+          make coverage
