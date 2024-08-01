@@ -1,8 +1,8 @@
 rockspec_format = "3.0"
 package = "lua-nvl-inspect"
-version = "0.1.0-2"
+version = "0.1.0-3"
 source = {
-   url = "https://github.com/shborg-lua/lua-nvl-inspect/archive/refs/tags/0.1.0-1.zip"
+   url = "https://github.com/shborg-lua/lua-nvl-inspect/archive/refs/tags/0.1.0-2.zip"
 }
 description = {
    summary = "A library for Lua and Neovim",

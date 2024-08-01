@@ -33,9 +33,10 @@ jobs:
         with:
           path: build
           key: ${{ runner.os }}-build-deps
-
       - name: Unit test
         run: |
-          mkdir .tmp
           make test
-          make coverage
+      - name: LuaRocks Upload
+        uses: nvim-neorocks/luarocks-tag-release@v1.0.2
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
