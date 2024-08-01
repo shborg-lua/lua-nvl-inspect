@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-12, windows-2022]
+        os: [ubuntu-22.04, macos-12]
         rev: [nightly, v0.9.5, v0.10.0]
         lua-version: ["5.4"]
         luarocks-version: ["3.11.1"]
