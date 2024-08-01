@@ -112,7 +112,9 @@ function writer.default.write(data, context)
 end
 
 function writer.busted.write(data, context)
-	busted_handler(data, context)
+	if busted_handler then
+		busted_handler(data, context)
+	end
 end
 
 local function has_busted()
@@ -179,7 +181,9 @@ M.dprint = dprint
 if not is_loaded then
 	if has_busted() then
 		local busted = require("nvl.inspect.modules.busted")({})
-		busted_handler = busted.dprint
+		if busted then
+			busted_handler = busted.dprint
+		end
 	end
 	is_loaded = true
 end

@@ -22,6 +22,9 @@ end
 
 return function(options)
 	local busted = require("busted")
+	if not busted or not busted.subscribe then
+		return
+	end
 	local handler = require("busted.outputHandlers.base")()
 	---@alias nvl.inspect.modules.debug_print.context_item {[1]:nvl.inspect.modules.debug_print.context,[2]:string}
 
