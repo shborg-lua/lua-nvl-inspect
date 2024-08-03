@@ -1,0 +1,30 @@
+return {
+	_all = {
+		coverage = false,
+		lpath = "lua/?.lua;lua/?/init.lua",
+		pattern = "spec%.lua$",
+		lua = "nlua",
+		ROOT = { "spec/" },
+	},
+	default = {
+		tags = { "tests", "unit", "integration", "nvl.inspect" },
+		output = "htest",
+		verbose = true,
+		ROOT = { "spec/tests" },
+	},
+	tests = {
+		tags = { "tests", "unit", "integration" },
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	unit = {
+		tags = "unit",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.inspect"] = {
+		tags = "nvl.inspect",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+}
