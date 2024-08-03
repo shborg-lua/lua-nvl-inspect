@@ -3,6 +3,8 @@ local M = {}
 
 local utils = require("nvl.core.utils")
 
+--- @alias nvl.OperatingSystem "linux"|"mac"|"windows"|"wsl"|"wsl2"|"bsd"
+
 --- @class nvl.ConfigOptions
 --- @field os_info nvl.OperatingSystem The operating system that Neorg is currently running under.
 --- @field pathsep "\\"|"/" The operating system that Neorg is currently running under.
@@ -12,14 +14,6 @@ local defaults = (function(projects_root)
 
 		runtime = require("nvl.core.runtime"),
 
-		development = {
-			nvl_root = projects_root .. "/dev/projects/lua-nvl",
-			packages = {
-				["nvl.utils"] = projects_root .. "/lua-nvl-utils",
-				["nvl.inspect"] = projects_root .. "/lua-nvl-inspect",
-			},
-		},
-
 		exports = {
 			--- @type table<string,nvl.config.mod_info>
 			globals = {},
@@ -27,7 +21,7 @@ local defaults = (function(projects_root)
 			enable_global = true,
 		},
 	}
-end)(os.getenv("HOME") .. "/dev/projects")
+end)()
 
 ---@type nvl.ConfigOptions
 local options

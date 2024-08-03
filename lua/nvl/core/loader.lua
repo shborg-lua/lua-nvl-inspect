@@ -8,8 +8,8 @@ local utils = require("nvl.core.utils")
 ---@field map table<string,nvl.accessor_target>
 
 ---@class nvl.PackageRegistry
----@field discovered table<string,nvl.Package>
----@field loaded table<string,nvl.Package>
+---@field discovered table<string,nvl.core.Package>
+---@field loaded table<string,nvl.core.Package>
 
 ---@class _nvl
 ---@field packages nvl.PackageRegistry the package registry
@@ -57,7 +57,7 @@ function nvl.init()
 end
 
 ---
----@param pkg nvl.Package
+---@param pkg nvl.core.Package
 function nvl.add_package(pkg)
 	nvl._.packages.discovered[pkg.name] = pkg
 	nvl._.accessor.map[pkg.name] = {
@@ -67,25 +67,6 @@ function nvl.add_package(pkg)
 	}
 end
 
--- ---@param name string symbol name
--- function NvlPackage:pack_symbol(name)
--- 	local sym = self.module[name]
---
--- 	if not sym then
--- 		-- TODO: handle error
--- 		print("symbol is nil")
--- 		return
--- 	end
---
--- 	return sym
--- end
---
--- ---comment
--- ---@param module_name string module name
--- function loader.pack_module(module_name)
--- 	return NvlPackage
--- end
---
 local accessor = {}
 local accessor_mt = {}
 
@@ -97,22 +78,7 @@ function loader.entrypoint()
 
 	nvl.init()
 
-	for pack_name, nvl_pack_path in pairs(config.development.packages) do
-		print(string.format("discovered package %s", pack_name))
-
-		local nvl_pack_name = pack_name:match("nvl%.(%w+)")
-		package.path = package.path .. ";" .. nvl_pack_path .. "/lua/?.lua"
-		package.path = package.path .. ";" .. nvl_pack_path .. "/lua/?/init.lua"
-		local pkg = NvlPackage:new(nvl_pack_name, nvl_pack_path)
-		P({
-			">>>>>>>>>>",
-			pkg = pkg.config,
-		})
-		nvl.add_package(pkg)
-	end
-
-	return nvl
-	-- nvl.inspect = require("nvl.core.inspect")
+	--- TODO: load lazy Packages
 end
 
 return loader
