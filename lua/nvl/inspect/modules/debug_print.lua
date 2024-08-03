@@ -23,12 +23,18 @@ end
 ---comment
 ---@param index number
 ---@param obj any
----@return string
-function formatter.value(index, obj)
+---@param opts? nvl.inspect.var_arg_first
+---@return string|nil
+function formatter.value(index, obj, opts)
+	opts = opts or {}
 	if obj == nil then
 		return formatter.value_tuple(index, type(nil), M.NIL)
 	elseif type(obj) == "table" then
-		return formatter.value_tuple(index, type(obj), inspect(obj):gsub("%s+", " "):gsub("\n", ""))
+		local s = formatter.value_tuple(index, type(obj), inspect(obj))
+		if opts.single_line then
+			s = s:gsub("%s+", " "):gsub("\n", "")
+		end
+		return s
 	elseif type(obj) == "function" then
 		return formatter.value_tuple(index, type(obj), inspect(obj))
 	elseif type(obj) == "string" then
@@ -54,10 +60,11 @@ function formatter.message(msg)
 end
 
 ---comment
----@param msg? string|any
+---@param msg? string
+---@param opts? nvl.inspect.var_arg_first
 ---@param ... any 1st arg string as message or any type, rest any type
 ---@return string[]
-function formatter.items(msg, ...)
+function formatter.items(msg, opts, ...)
 	local argv = select("#", ...) > 0 and { ... } or {}
 	local columns = {}
 
@@ -73,7 +80,7 @@ function formatter.items(msg, ...)
 	if #argv > 0 then
 		for i = 1, #argv, 1 do
 			local v = argv[i]
-			table.insert(columns, formatter.value(i, v))
+			table.insert(columns, formatter.value(i, v, opts))
 		end
 	end
 	return columns
@@ -156,9 +163,14 @@ function dprint._get_busted_context(source, currentline)
 end
 
 ---comment
----@param msg? string
+---@alias nvl.inspect.var_arg_first {msg?:string, single_line?:boolean}
+---
+---comment
+---@param opts? nvl.inspect.var_arg_first
 ---@param ... any 1st arg string as message or any type, rest any type
-function dprint.P(msg, ...)
+function dprint._P(opts, ...)
+	local msg = type(opts) == "table" and opts.msg and opts.msg or opts
+
 	local info = debug.getinfo(2, "nSl")
 	local source = info.short_src or "unknown source"
 	local currentline = info.currentline or "unknown line"
@@ -167,12 +179,25 @@ function dprint.P(msg, ...)
 	context.function_name = info.function_name
 
 	context.busted = dprint._get_busted_context(source, currentline)
-	local columns = formatter.items(msg, ...)
+	local columns = formatter.items(msg, opts, ...)
 	local out = writer.default
 	if context.busted.kind then
 		out = writer.busted
 	end
 	out.write(formatter.output(columns), context)
+end
+---comment
+---@param msg? string
+---@param ... any 1st arg string as message or any type, rest any type
+function dprint.P(msg, ...)
+	dprint._P({ msg = msg, single_line = true }, ...)
+end
+
+---comment
+---@param msg? string
+---@param ... any 1st arg string as message or any type, rest any type
+function dprint.PL(msg, ...)
+	dprint._P({ msg = msg, single_line = false }, ...)
 end
 
 M.formatter = formatter

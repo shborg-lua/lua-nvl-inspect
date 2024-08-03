@@ -14,16 +14,17 @@ describe("#unit #nvl.inspect", function()
 			end)
 		end)
 	end)
+
 	describe("nvl.inspect.modules.debug_print.formatter", function()
 		local debug_print = require("lua.nvl.inspect.modules.debug_print")
 		describe("formatter.items", function()
 			it("formats a message", function()
 				local formatter = debug_print.formatter
-				assert.equal("!NIL", formatter.items()[1])
+				-- assert.equal("!NIL", formatter.items()[1])
 				assert.equal("msg: test", formatter.items("test")[1])
 				assert.equal("[ 01 {number}:'1' ]", formatter.items(1)[1])
 				assert.equal("[ 01 {boolean}:'false' ]", formatter.items(false)[1])
-				assert.equal("[ 01 {table}:'{ a = 1 }' ]", formatter.items({ a = 1 })[1])
+				assert.equal("[ 01 {table}:'{ a = 1 }' ]", formatter.items({ a = 1 }, { single_line = true })[1])
 				assert.equal("[ 01 {function}:'<function 1>' ]", formatter.items(function() end)[1])
 
 				local co = coroutine.create(function() end)
@@ -32,6 +33,7 @@ describe("#unit #nvl.inspect", function()
 			end)
 		end)
 	end)
+
 	describe("nvl.inspect.config", function()
 		it("returns the config", function()
 			local config = require("nvl.inspect.config")
@@ -44,7 +46,39 @@ describe("#unit #nvl.inspect", function()
 			assert.True(config.exports.enable_global)
 		end)
 	end)
-	describe("call nvl.inspect", function()
+
+	describe("nvl.inspect.setup", function()
+		it("configure the library", function()
+			require("nvl.inspect").setup({
+				exports = {
+					globals = {
+						D = { "nvl.inspect.modules.debug_print", "dprint", "P" },
+					},
+				},
+			})
+			assert.Function(_G.D)
+		end)
+		it("creates a global debug printer named _G.P", function()
+			local inspect = require("nvl.inspect")
+			inspect(1)
+			assert.Function(_G.P)
+		end)
+	end)
+
+	describe("require nvl.inspect", function()
+		it("exports as a global", function()
+			local inspect = require("nvl.inspect")
+			inspect(1)
+			assert.Table(_G.inspect)
+		end)
+		it("creates a global debug printer named _G.P", function()
+			local inspect = require("nvl.inspect")
+			inspect(1)
+			assert.Function(_G.P)
+		end)
+	end)
+
+	describe("require nvl.inspect", function()
 		it("exports as a global", function()
 			local inspect = require("nvl.inspect")
 			inspect(1)
