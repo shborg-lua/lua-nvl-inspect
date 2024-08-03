@@ -75,8 +75,8 @@ coverage: coverage_clean coverage_dir
 publish: $(BUSTED) $(LUV) $(NLUA) coverage_dir
 	@echo coverage with $(LUA_VERSION) tag=$(BUSTED_TAG) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
-		luarocks pack lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
-		luarocks upload lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec --api-key=$(LUAROCKS_API_KEY)
+		luarocks pack lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+		luarocks upload lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec --api-key=$(LUAROCKS_API_KEY)
 
 
 test_nvim: $(BUSTED) $(LUV) $(NLUA) coverage_dir
@@ -113,8 +113,8 @@ $(NLUA): $(LUAROCKS)
 $(LUAROCKS_DEPS): $(LUAROCKS) $(BUSTED_HTEST) $(NLUA)
 	@echo build for $(LUA_VERSION) $(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
-	luarocks make lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
-	luarocks test --prepare lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+	luarocks make lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+	luarocks test --prepare lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
 	touch $(TARGET_DIR)/.deps_installed
 
 

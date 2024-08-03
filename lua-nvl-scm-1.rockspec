@@ -1,15 +1,15 @@
 ---@diagnostic disable:lowercase-global
 
 rockspec_format = "3.0"
-package = "lua-nvl-inspect"
+package = "lua-nvl"
 version = "scm-1"
 source = {
-	url = "https://github.com/shborg-lua/lua-nvl-inspect/archive/refs/tags/" .. version .. ".zip",
+	url = "https://github.com/shborg-lua/lua-nvl/archive/refs/tags/" .. version .. ".zip",
 }
 description = {
 	summary = "A library for Lua and Neovim",
-	detailed = "`nvl.inspect` is the inspect util kikito/inspect.lua",
-	homepage = "http://github.com/shborg-lua/lua-nvl-inspect",
+	detailed = "`nvl` is WIP",
+	homepage = "http://github.com/shborg-lua/lua-nvl",
 	license = "MIT",
 }
 dependencies = {
@@ -17,10 +17,11 @@ dependencies = {
 }
 build = {
 	type = "builtin",
+
 	modules = {
-		["nvl.inspect"] = "lua/nvl/inspect/init.lua",
-		["nvl.inspect.config"] = "lua/nvl/inspect/config.lua",
-		["nvl.inspect.modules.inspect"] = "lua/nvl/inspect/modules/inspect.lua",
+		["nvl"] = "lua/nvl/init.lua",
+		["nvl.core.config"] = "lua/nvl/core/config.lua",
+		["nvl.core.modules"] = "lua/nvl/core/modules/init.lua",
 	},
 	copy_directories = {},
 	platforms = {},

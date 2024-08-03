@@ -1,5 +1,5 @@
 return function(options)
-	local busted = require("spec.busted_helper")
+	local busted = require("packages.lua-nvl-utilss.spec.busted_helper")
 	local handler = require("busted.outputHandlers.utfTerminal")(options)
 
 	local promiseUnhandledError = {}
