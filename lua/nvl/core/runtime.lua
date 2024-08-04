@@ -52,6 +52,11 @@ function runtime.package.path.add(directory)
 	runtime.package.path._rpath[#runtime.package.path._rpath + 1] = directory .. "/?/init.lua;"
 end
 
+-- Function to add a directory to package.path
+function runtime.package.path.inject()
+	package.path = table.concat(runtime.package.path._rpath, ";") .. package.path
+end
+
 -- Function to check if a path exists and is of a given type ('file' or 'directory')
 local function path_exists(path, type)
 	local attr = lfs.attributes(path)
@@ -68,6 +73,11 @@ function runtime.package.path.scan()
 	local function scandir(base_dir)
 		local lua_dir = base_dir
 		base_dir = runtime.joinpath(base_dir, "nvl")
+		local ok, handle = pcall(lfs.dir, base_dir)
+		-- print(string.format("scan.scandir base_dir=%s", base_dir))
+		if not ok then
+			return
+		end
 		for file in lfs.dir(base_dir) do
 			if file ~= "." and file ~= ".." then
 				local full_path = base_dir .. "/" .. file

@@ -2,15 +2,17 @@
 local M = {}
 
 local utils = require("nvl.core.utils")
+---@class nvl.config.mod_info
+---@field [1] string The module name to import from
+---@field [2]? string The symbol inside the module
 
---- @alias nvl.OperatingSystem "linux"|"mac"|"windows"|"wsl"|"wsl2"|"bsd"
-
---- @class nvl.ConfigOptions
---- @field os_info nvl.OperatingSystem The operating system that Neorg is currently running under.
---- @field pathsep "\\"|"/" The operating system that Neorg is currently running under.
+---@class nvl.ConfigOptions
 local defaults = (function(projects_root)
 	return {
 		__class = { name = "nvl.config" },
+		development = {
+			enabled = true,
+		},
 
 		runtime = require("nvl.core.runtime"),
 

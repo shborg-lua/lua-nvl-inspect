@@ -1,7 +1,3 @@
---- @class nvl.config.mod_info
---- @field [1] string The module name to import from
---- @field [2]? string The symbol inside the module
----
 --- @class nvl.package.ConfigOptionsExports
 --- @field globals table<string,nvl.config.mod_info>
 ---
@@ -10,4 +6,6 @@
 
 --- @class nvl.package.config_exports
 --- @field setup fun(options:nvl.package.ConfigOptionsBase):boolean setup function of a package
+---
+--- @alias nvl.OperatingSystem "linux"|"mac"|"windows"|"wsl"|"wsl2"|"bsd"
 ---

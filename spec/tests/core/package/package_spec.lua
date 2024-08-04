@@ -37,11 +37,6 @@ describe("#unit", function()
 						config.runtime.joinpath(utils.git_root(), "build", "2.1.0-beta3", "share", "lua", "5.1")
 					)
 
-					P({
-						">>>>>>>>>>>>>>>>>>>>>",
-						name = pkg.name,
-						path = pkg.path,
-					})
 					-- for package_name, _ in pairs(packages) do
 					-- 	it("exports package '" .. package_name .. "'", function()
 					-- 		validate_package(nvl, {
