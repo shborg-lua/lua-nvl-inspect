@@ -7,11 +7,12 @@ local utils = require("nvl.core.utils")
 ---@field [2]? string The symbol inside the module
 
 ---@class nvl.ConfigOptions
+---@field development {enabled:boolean}
 local defaults = (function(projects_root)
 	return {
 		__class = { name = "nvl.config" },
 		development = {
-			enabled = true,
+			enabled = false,
 		},
 
 		runtime = require("nvl.core.runtime"),

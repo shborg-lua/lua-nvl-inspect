@@ -27,8 +27,28 @@ local function validate_loaded_package(nvl, expect)
 end
 
 describe("#unit #nvl", function()
+	describe("setup", function()
+		it("sets config values", function()
+			local config = require("nvl.core.config")
+			local nvl = require("nvl")
+
+			local options = {
+				development = {
+					enabled = true,
+				},
+			}
+			assert.False(config.development.enabled)
+			nvl.setup(options)
+			assert.True(config.development.enabled)
+		end)
+	end)
+
 	describe("nvl exports", function()
-		local nvl = require("nvl")
+		local nvl = require("nvl").setup({
+			development = {
+				enabled = true,
+			},
+		})
 
 		local packages = {
 			inspect = false,
@@ -43,7 +63,11 @@ describe("#unit #nvl", function()
 		end
 	end)
 	describe("nvl exports loaded packages", function()
-		local nvl = require("nvl")
+		local nvl = require("nvl").setup({
+			development = {
+				enabled = true,
+			},
+		})
 		local mod = nvl.inspect
 		assert(mod)
 

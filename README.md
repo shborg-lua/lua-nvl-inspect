@@ -15,7 +15,63 @@ local SPEC = {
 }
 ```
 
+## Naming
+
+General rules:
+
+- namespace in lowercase
+- exported symbols in CamelCase or UPPERCASE or IUpperCase
+- prepend private symbols with an `_` character
+
+```lua
+--- this is a namespace
+--- @class nvl.core.rocks
+
+--- this is an export table
+--- It is in lowercase to distinguish from other symbols
+--- and to have a standard name for this type.
+--- @class nvl.core.rocks.module_exports
+
+--- this is a custom type 
+--- @alias nvl.core.rocks.hander_fun fun(...:any):boolean
+local function(...) return true end
+
+--- this is a Class
+--- @class nvl.core.rocks.Rocks
+local Rocks = {}
+
+
+--- this is a private Class which should 
+--- not because be exported
+--- @class nvl.core.rocks._Rocks
+local _Rocks = {}
+
+--- this is an Interface
+--- I use an uppercase I to distinguish from classes
+--- and because it's short 
+--- @class nvl.core.rocks.IRocksScanner
+local IRocksScanner = {}
+function IRocksScanner.scan() end
+
+--- this is a constant
+--- @class nvl.core.rocks.TYPES
+local TYPES = {}
+
+--- this is an options table
+--- @class nvl.core.rocks.RocksOptions
+local RocksOptions = {}
+
+
+```
+
 ## Packaging and Deployment
+
+`NVL` uses `luarocks` for packaging and deployment.
+
+### lazy.nvim
+
+`lazy.nvim` uses a separate `luarocks` tree for each plugin.
+see: lazy.nvim/lua/lazy/pkg/rockspec.lua
 
 ### NVL Core Library
 

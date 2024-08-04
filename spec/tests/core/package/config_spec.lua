@@ -6,20 +6,17 @@ local utils = require("nvl.core.utils")
 describe("#unit", function()
 	describe("nvl.core.config", function()
 		describe("setup", function()
-			it("returns a lazy initialized Package", function()
+			it("sets config values", function()
 				local config = require("nvl.core.config")
 
-				local options = {}
-
+				local options = {
+					development = {
+						enabled = true,
+					},
+				}
+				assert.False(config.development.enabled)
 				config.setup(options)
-
-				-- for package_name, _ in pairs(packages) do
-				-- 	it("exports package '" .. package_name .. "'", function()
-				-- 		validate_package(nvl, {
-				-- 			name = package_name,
-				-- 		})
-				-- 	end)
-				-- end
+				assert.True(config.development.enabled)
 			end)
 		end)
 	end)

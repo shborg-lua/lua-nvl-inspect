@@ -7,7 +7,7 @@ return {
 		ROOT = { "spec/" },
 	},
 	default = {
-		tags = { "tests", "unit", "integration", "nvl" },
+		tags = { "tests", "unit", "integration", "nvl", "nvl.core.rocks" },
 		output = "htest",
 		verbose = true,
 		ROOT = { "spec/tests" },
@@ -19,6 +19,11 @@ return {
 	},
 	unit = {
 		tags = "unit",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.core.rocks"] = {
+		tags = "nvl.core.rocks",
 		ROOT = { "spec/tests" },
 		verbose = true,
 	},

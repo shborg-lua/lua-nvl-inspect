@@ -86,6 +86,7 @@ function loader.entrypoint()
 	local config = require("nvl.core.config")
 	local runtime = require("nvl.core.runtime")
 
+	print(string.format("loader.entrypoint development.enabled=%s", config.development.enabled))
 	if config.development.enabled then
 		local git_root = require("nvl.core.utils").git_root()
 		runtime.package.path.register(runtime.joinpath(git_root, "packages", "nvl-inspect"))
