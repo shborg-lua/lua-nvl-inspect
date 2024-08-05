@@ -1,5 +1,5 @@
 #!/bin/bash
-current_rocks=$(ls lua-nvl-*-?*.?*.?*-?*.rockspec)
+current_rocks=$(ls lua-nvl-?*.?*.?*-?*.rockspec)
 
 source "${TARGET_DIR}/bin/activate" && eval "$(luarocks path)" && luarocks new_version "$current_rocks" && rm -f "$current_rocks"
 

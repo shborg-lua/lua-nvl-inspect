@@ -1,5 +1,6 @@
 package.path = os.getenv("PWD") .. "/lua/?.lua;" .. package.path
 
+require("spec.helpers.assertions")
 local TestSuite = {}
 _G.TestSuite = TestSuite
 _G.inspect = require("spec.helpers.inspect")

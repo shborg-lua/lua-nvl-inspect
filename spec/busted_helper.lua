@@ -37,7 +37,6 @@ function _G.wait(ms)
 	timer:start(interval, interval, function()
 		cnt = cnt + interval
 		local d = getDone()
-		-- P { "timer start function", d = d }
 		if cnt >= ms or d then
 			timer:stop()
 			timer:close()

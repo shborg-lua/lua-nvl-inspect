@@ -7,7 +7,14 @@ return {
 		ROOT = { "spec/" },
 	},
 	default = {
-		tags = { "tests", "unit", "integration", "nvl.inspect" },
+		tags = {
+			"tests",
+			"unit",
+			"integration",
+			"nvl",
+			"nvl.core.rocks",
+			"nvl.core.package",
+		},
 		output = "htest",
 		verbose = true,
 		ROOT = { "spec/tests" },
@@ -22,8 +29,18 @@ return {
 		ROOT = { "spec/tests" },
 		verbose = true,
 	},
-	["nvl.inspect"] = {
-		tags = "nvl.inspect",
+	["nvl.core.package"] = {
+		tags = "nvl.core.package",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.core.rocks"] = {
+		tags = "nvl.core.rocks",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl"] = {
+		tags = "nvl",
 		ROOT = { "spec/tests" },
 		verbose = true,
 	},

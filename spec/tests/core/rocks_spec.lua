@@ -1,0 +1,35 @@
+local assert = assert
+---@cast assert -function,+nvl.test.luassert
+
+local utils = require("nvl.core.utils")
+
+describe("#unit", function()
+	describe("#nvl.core.rocks", function()
+		local runtime = require("nvl.core.runtime")
+		local rocks = require("nvl.core.rocks")
+		local git_root = require("nvl.core.utils").git_root()
+		describe("Tree", function()
+			describe("new", function()
+				it("creates a new rocks tree", function()
+					local test_path = runtime.joinpath(git_root, "packages")
+					local rt = rocks.Tree("dev", test_path)
+					assert(rt)
+					assert.Table(rt)
+					assert.equal("dev", rt.name)
+					assert.equal(test_path, rt.path)
+				end)
+			end)
+			describe("is_nvl_rocks_tree_dir", function()
+				it("returns the dir if a path is an nvl package path in a rocks tree", function()
+					local test_path =
+						"/home/someuser/.local/share/nvim/lazy-rocks/lua-nvl-utils/share/lua/5.1/?/init.lua"
+					assert.String(rocks.Tree.match_nvl_dir(test_path))
+				end)
+			end)
+			describe("repository_factory", function()
+				local rt = rocks.Tree.luarocks_factory()
+				assert(rt)
+			end)
+		end)
+	end)
+end)

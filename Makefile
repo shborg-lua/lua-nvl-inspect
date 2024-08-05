@@ -16,9 +16,6 @@ TARGET_DIR := $(DEPS)/$(LUA_NUMBER)
 
 HEREROCKS ?= $(DEPS)/hererocks.py
 UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Darwin)
-HEREROCKS_ENV ?= MACOSX_DEPLOYMENT_TARGET=10.15
-endif
 HEREROCKS_URL ?= https://raw.githubusercontent.com/luarocks/hererocks/master/hererocks.py
 HEREROCKS_ACTIVE := source $(TARGET_DIR)/bin/activate
 
@@ -62,6 +59,10 @@ test_lua: $(BUSTED) $(LUAROCKS_DEPS) $(LUV) coverage_dir
 		lua spec/init.lua --coverage --helper=$(BUSTED_HELPER) --run=$(BUSTED_TAG) -o htest spec/tests
 
 
+test_nvim: $(BUSTED) $(LUV) $(NLUA) coverage_dir
+	@echo Test with $(LUA_VERSION) ......
+	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
+	busted --lua="$(NLUA)" --helper=spec/init.lua --run=$(BUSTED_TAG) -o htest spec/tests
 
 coverage_clean:
 	rm -fr $(COVERAGE)
@@ -75,15 +76,8 @@ coverage: coverage_clean coverage_dir
 publish: $(BUSTED) $(LUV) $(NLUA) coverage_dir
 	@echo coverage with $(LUA_VERSION) tag=$(BUSTED_TAG) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
-		luarocks pack lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
-		luarocks upload lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec --api-key=$(LUAROCKS_API_KEY)
-
-
-test_nvim: $(BUSTED) $(LUV) $(NLUA) coverage_dir
-	@echo Test with $(LUA_VERSION) ......
-	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
-	busted --lua="$(NLUA)" --helper=spec/init.lua --run=$(BUSTED_TAG) -o htest spec/tests
-
+		luarocks pack lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+		luarocks upload lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec --api-key=$(LUAROCKS_API_KEY)
 
 new-rocks-version: 
 	./.new-rocks-version
@@ -91,12 +85,18 @@ new-rocks-version:
 rocks-version: 
 	$(info $(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION))
 
+sync-registry:
+	@echo synchronizing .nvl_packages 
+	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
+ 	lua -e 'package.path = os.getenv("PWD") .. "/lua/?.lua;" .. package.path; require("nvl.core.package.registry").sync()'
+
+
 $(HEREROCKS):
 	mkdir -p $(DEPS)
 	curl $(HEREROCKS_URL) -o $@
 
 $(LUAROCKS): $(HEREROCKS)
-	$(HEREROCKS_ENV) python $< $(TARGET_DIR) --$(LUA_VERSION) -r latest
+	python $< $(TARGET_DIR) --$(LUA_VERSION) -r latest
 
 $(BUSTED): $(LUAROCKS)
 	$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
@@ -113,8 +113,8 @@ $(NLUA): $(LUAROCKS)
 $(LUAROCKS_DEPS): $(LUAROCKS) $(BUSTED_HTEST) $(NLUA)
 	@echo build for $(LUA_VERSION) $(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
-	luarocks make lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
-	luarocks test --prepare lua-nvl-inspect-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+	luarocks make lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
+	luarocks test --prepare lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
 	touch $(TARGET_DIR)/.deps_installed
 
 
@@ -124,6 +124,6 @@ $(LUV): $(LUAROCKS)
 clean:
 	rm -rf $(DEPS)
 
-.PHONY: all deps clean lint test test_nvim test_lua rocks-version new-rocks-version
+.PHONY: all deps clean lint test test_nvim test_lua rocks-version new-rocks-version check_python
 #
 

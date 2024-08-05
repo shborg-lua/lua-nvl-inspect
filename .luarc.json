@@ -18,6 +18,7 @@
     "async",
     "wait",
     "P",
+    "PL",
     "stub",
     "spy",
     "insulate",

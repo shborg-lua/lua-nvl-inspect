@@ -1,0 +1,42 @@
+return {
+	_all = {
+		coverage = false,
+		lpath = "lua/?.lua;lua/?/init.lua",
+		pattern = "spec%.lua$",
+		lua = "nlua",
+		ROOT = { "spec/" },
+	},
+	default = {
+		tags = { "tests", "unit", "integration", "nvl.unit.types", "nvl.unit.table" },
+		output = "htest",
+		verbose = true,
+		-- ["exclude-pattern"] = "sum_spec", -- do not run spec files inside fixture
+		-- helper = "spec.util.test_env",
+		-- ["auto-insulate"] = false,
+		ROOT = { "spec/tests" },
+	},
+	tests = {
+		tags = { "tests", "unit", "integration" },
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	unit = {
+		tags = "unit",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.utils.types"] = {
+		tags = "nvl.utils.types",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.utils.table"] = {
+		tags = "nvl.utils.table",
+		ROOT = { "spec/tests" },
+		verbose = true,
+	},
+	["nvl.utils.reload"] = {
+
+		tags = "nvl.utils.reload",
+	},
+}
