@@ -113,8 +113,26 @@ function Registry.sync()
 end
 
 function Registry.init()
-	local root = git_root()
-	local fact = loadfile(runtime.joinpath(root, ".nvl_registry." .. Registry.format))
+	local nvl_registry_file = ".nvl_registry." .. Registry.format
+
+	local path_nvl_registry
+
+	if vim then
+		path_nvl_registry = vim.api.nvim_get_runtime_file(nvl_registry_file, false)
+		if not path_nvl_registry then
+			--- TODO: handle this error
+			print(string.format("Registry.init: cannot find nvl registry file: '%s'", nvl_registry_file))
+			return
+		end
+
+		path_nvl_registry = path_nvl_registry[1]
+	else
+		--- TODO: this is for development only
+		--- handle luarocks library correclty
+		path_nvl_registry = runtime.joinpath(utils.git_root(), nvl_registry_file)
+	end
+
+	local fact = loadfile(path_nvl_registry)
 	if type(fact) == "function" then
 		for key, value in pairs(fact().packages) do
 			Registry._packages[key] = value

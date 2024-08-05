@@ -30,8 +30,17 @@ local nvl = {
 	},
 }
 
+local D = function(...)
+	if vim then
+		vim.print(...)
+	else
+		P(...)
+	end
+end
+
 local nvl_mt = {}
 nvl_mt.__index = function(t, k)
+	D({ ">>>>>>>>>>>>>>>>>>>> nvl_mt.__index", k = k })
 	local v = rawget(t, k)
 	if v then
 		return v
@@ -55,12 +64,16 @@ end
 ---
 ---@param pkg nvl.Package
 function nvl.add_package(pkg)
+	-- D({
+	-- 	">>>>>>>>>> nvl.add_package",
+	-- 	pkg = pkg,
+	-- })
 	nvl._.packages.discovered[pkg.name] = pkg
 	nvl._.accessor.map[pkg.name] = {
 		f = function()
 			nvl._.packages.discovered[pkg.name] = nil
-			P({
-				">>>>>>>>>> nvl.add_package.f()",
+			D({
+				">>>>>>>>>> inside accessor func nvl.add_package.f()",
 				pkg = pkg,
 			})
 			local v = pkg:load()
@@ -73,8 +86,8 @@ end
 local function create_packages(rocks_trees)
 	local Package = require("nvl.core.package").Package
 
-	for _, tree in pairs(rocks_trees._trees) do
-		for pack_name, pack_spec in pairs(tree._.packages) do
+	for _, tree in rocks_trees.iter() do
+		for pack_name, pack_spec in tree:packages() do
 			local pkg = Package(pack_name, pack_spec.path, {
 				modules = {
 					config = pack_spec.config,

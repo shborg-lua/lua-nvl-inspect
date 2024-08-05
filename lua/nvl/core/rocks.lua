@@ -4,6 +4,7 @@ local utils = require("nvl.core.utils")
 local runtime = require("nvl.core.runtime")
 
 ---@class nvl.core.rocks.RocksTrees
+---@field iter nvl.types.dict_iterator
 local RocksTrees = {
 
 	---@type table<string,nvl.core.rocks.Tree>
@@ -115,6 +116,10 @@ function Tree.match_nvl_dir(path)
 	return path:match(pattern)
 end
 
+function Tree:packages()
+	return utils.factory.dict_iter(self._.packages)
+end
+
 function Tree:add(file, path)
 	local pkg = {
 		name = file,
@@ -125,10 +130,6 @@ function Tree:add(file, path)
 	}
 
 	self._.packages[file] = pkg
-end
-
-function Tree.packages()
-	return utils.factory.dict_iter(Tree._.packages)
 end
 
 function Tree.luarocks_factory_(opts)
@@ -180,6 +181,9 @@ function RocksTrees.inject_lpath()
 	end
 end
 
+function RocksTrees.iter()
+	return utils.factory.dict_iter(RocksTrees._trees)
+end
 M.RocksTrees = RocksTrees
 M.Tree = Tree
 
