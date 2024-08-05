@@ -40,7 +40,7 @@ end
 
 local nvl_mt = {}
 nvl_mt.__index = function(t, k)
-	D({ ">>>>>>>>>>>>>>>>>>>> nvl_mt.__index", k = k })
+	-- D({ ">>>>>>>>>>>>>>>>>>>> nvl_mt.__index", k = k })
 	local v = rawget(t, k)
 	if v then
 		return v
@@ -72,10 +72,10 @@ function nvl.add_package(pkg)
 	nvl._.accessor.map[pkg.name] = {
 		f = function()
 			nvl._.packages.discovered[pkg.name] = nil
-			D({
-				">>>>>>>>>> inside accessor func nvl.add_package.f()",
-				pkg = pkg,
-			})
+			-- D({
+			-- 	">>>>>>>>>> inside accessor func nvl.add_package.f()",
+			-- 	pkg = pkg,
+			-- })
 			local v = pkg:load()
 			nvl._.packages.loaded[pkg.name] = v
 			return v
