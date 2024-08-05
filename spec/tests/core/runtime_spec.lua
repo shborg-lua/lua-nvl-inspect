@@ -34,11 +34,11 @@ describe("#unit", function()
 			it("registers a package", function()
 				local runtime = require("nvl.core.runtime")
 				local git_root = require("nvl.core.utils").git_root()
-				runtime.package.path.register(runtime.joinpath(git_root, "packages", "nvl-inspect"))
-				runtime.package.path.register(runtime.joinpath(git_root, "packages", "nvl-utils"))
+				runtime.package.path.register(runtime.joinpath(git_root, "packages", "lua-nvl-inspect"))
+				runtime.package.path.register(runtime.joinpath(git_root, "packages", "lua-nvl-utils"))
 
-				assert(runtime.package.path._registered[1]:find("packages/nvl-inspect", 1, true))
-				assert(runtime.package.path._registered[2]:find("packages/nvl-utils", 1, true))
+				assert(runtime.package.path._registered[1]:find("packages/lua-nvl-inspect", 1, true))
+				assert(runtime.package.path._registered[2]:find("packages/lua-nvl-utils", 1, true))
 			end)
 		end)
 
@@ -46,20 +46,20 @@ describe("#unit", function()
 			it("scans for nvl packages", function()
 				local runtime = require("nvl.core.runtime")
 				runtime.package.path.scan()
-				assert(runtime.package.path._rpath[1]:find("packages/nvl-inspect/lua/?.lua", 1, true))
-				assert(runtime.package.path._rpath[2]:find("packages/nvl-inspect/lua/?/init.lua", 1, true))
-				assert(runtime.package.path._rpath[3]:find("packages/nvl-utils/lua/?.lua", 1, true))
-				assert(runtime.package.path._rpath[4]:find("packages/nvl-utils/lua/?/init.lua", 1, true))
+				assert(runtime.package.path._rpath[1]:find("packages/lua-nvl-inspect/lua/?.lua", 1, true))
+				assert(runtime.package.path._rpath[2]:find("packages/lua-nvl-inspect/lua/?/init.lua", 1, true))
+				assert(runtime.package.path._rpath[3]:find("packages/lua-nvl-utils/lua/?.lua", 1, true))
+				assert(runtime.package.path._rpath[4]:find("packages/lua-nvl-utils/lua/?/init.lua", 1, true))
 				assert(
 					runtime.package.path._discovered["inspect"].config:find(
-						"packages/nvl-inspect/lua/nvl/inspect/config.lua",
+						"packages/lua-nvl-inspect/lua/nvl/inspect/config.lua",
 						1,
 						true
 					)
 				)
 				assert(
 					runtime.package.path._discovered["inspect"].full_path:find(
-						"packages/nvl-inspect/lua/nvl/inspect",
+						"packages/lua-nvl-inspect/lua/nvl/inspect",
 						1,
 						true
 					)
@@ -69,14 +69,14 @@ describe("#unit", function()
 				-- Check second entry
 				assert(
 					runtime.package.path._discovered["utils"].config:find(
-						"packages/nvl-utils/lua/nvl/utils/config.lua",
+						"packages/lua-nvl-utils/lua/nvl/utils/config.lua",
 						1,
 						true
 					)
 				)
 				assert(
 					runtime.package.path._discovered["utils"].full_path:find(
-						"packages/nvl-utils/lua/nvl/utils",
+						"packages/lua-nvl-utils/lua/nvl/utils",
 						1,
 						true
 					)

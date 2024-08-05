@@ -8,6 +8,84 @@ local M = {}
 
 M.NIL = "\0"
 
+M.table = {}
+
+--- Return a list of all keys used in a table.
+--- However, the order of the return table of keys is not guaranteed.
+---
+---@see From https://github.com/premake/premake-core/blob/master/src/base/table.lua
+---
+---@generic T
+---@param t table<T, any> (table) Table
+---@return T[] : List of keys
+function M.table.keys(t)
+	assert(type(t) == "table", "M.table.tbl_keys: t must be a table")
+	--- @cast t table<any,any>
+
+	local keys = {}
+	for k in pairs(t) do
+		table.insert(keys, k)
+	end
+	return keys
+end
+
+--- Return a list of all values used in a table.
+--- However, the order of the return table of values is not guaranteed.
+---
+---@generic T
+---@param t table<any, T> (table) Table
+---@return T[] : List of values
+function M.table.values(t)
+	assert(type(t) == "table", "M.table.tbl_values: t must be a table")
+
+	local values = {}
+	for _, v in
+		pairs(t --[[@as table<any,any>]])
+	do
+		table.insert(values, v)
+	end
+	return values
+end
+
+M.factory = {}
+
+---comment
+---@return nvl.types.list_iterator
+function M.factory.list_iter()
+	return function(t)
+		local i = 0
+		local n = #t
+		return function()
+			i = i + 1
+			if i <= n then
+				return t[i]
+			end
+		end
+	end
+end
+
+---comment
+---@generic K
+---@generic V
+---@param t table<K,V>
+---@return nvl.types.dict_iterator
+function M.factory.dict_iter(t)
+	local keys = M.table.keys(t)
+	table.sort(keys)
+	local k
+	local v
+	local i = 0
+	local n = #keys
+	return function()
+		i = i + 1
+		k = keys[i]
+		v = t[k]
+		if i <= n then
+			return k, v
+		end
+	end
+end
+
 ---@generic T
 ---@param orig T
 ---@param cache? table<any,any>

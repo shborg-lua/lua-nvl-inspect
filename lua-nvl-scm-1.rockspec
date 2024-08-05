@@ -35,6 +35,7 @@ test_dependencies = {
 	"luacov-multiple",
 	"luacov-console",
 	"luafilesystem",
+	"lua-cjson",
 }
 test = {
 	type = "busted",

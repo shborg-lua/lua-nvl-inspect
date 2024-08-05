@@ -59,6 +59,10 @@ function nvl.add_package(pkg)
 	nvl._.accessor.map[pkg.name] = {
 		f = function()
 			nvl._.packages.discovered[pkg.name] = nil
+			P({
+				">>>>>>>>>> nvl.add_package.f()",
+				pkg = pkg,
+			})
 			local v = pkg:load()
 			nvl._.packages.loaded[pkg.name] = v
 			return v
@@ -66,17 +70,19 @@ function nvl.add_package(pkg)
 	}
 end
 
-local function create_packages(runtime)
+local function create_packages(rocks_trees)
 	local Package = require("nvl.core.package").Package
 
-	for pack_name, pack_spec in pairs(runtime.package.path._discovered) do
-		local pkg = Package(pack_name, pack_spec.full_path, {
-			modules = {
-				config = pack_spec.config,
-				build = pack_spec.build,
-			},
-		})
-		nvl.add_package(pkg)
+	for _, tree in pairs(rocks_trees._trees) do
+		for pack_name, pack_spec in pairs(tree._.packages) do
+			local pkg = Package(pack_name, pack_spec.path, {
+				modules = {
+					config = pack_spec.config,
+					build = pack_spec.build,
+				},
+			})
+			nvl.add_package(pkg)
+		end
 	end
 end
 
@@ -85,21 +91,19 @@ function loader.entrypoint()
 	local compat = require("nvl.core.compat")
 	local config = require("nvl.core.config")
 	local runtime = require("nvl.core.runtime")
+	local rocks = require("nvl.core.rocks")
 
 	print(string.format("loader.entrypoint development.enabled=%s", config.development.enabled))
-	if config.development.enabled then
-		local git_root = require("nvl.core.utils").git_root()
-		runtime.package.path.register(runtime.joinpath(git_root, "packages", "nvl-inspect"))
-		runtime.package.path.register(runtime.joinpath(git_root, "packages", "nvl-utils"))
-	else
-		for path in string.gmatch(package.path, "([^;]+)") do
-			runtime.package.path.register(path)
-		end
+	local tree_root
+	local package_root
+	if vim then
+		tree_root = runtime.joinpath(vim.fn.stdpath("data"), "lazy-rocks")
+		package_root = "/share/lua/5.1/nvl/"
 	end
 
-	runtime.package.path.scan()
-	runtime.package.path.inject()
-	create_packages(runtime)
+	local rt = rocks.Tree.luarocks_factory(tree_root, package_root)
+	rt.inject_lpath()
+	create_packages(rt)
 	nvl.init()
 
 	nvl.config = config

@@ -85,6 +85,12 @@ new-rocks-version:
 rocks-version: 
 	$(info $(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION))
 
+sync-registry:
+	@echo synchronizing .nvl_packages 
+	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
+ 	lua -e 'package.path = os.getenv("PWD") .. "/lua/?.lua;" .. package.path; require("nvl.core.package.registry").sync()'
+
+
 $(HEREROCKS):
 	mkdir -p $(DEPS)
 	curl $(HEREROCKS_URL) -o $@
