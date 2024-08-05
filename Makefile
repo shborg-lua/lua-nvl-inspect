@@ -42,6 +42,9 @@ endif
 
 .EXPORT_ALL_VARIABLES:
 
+help: ## show help message
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
 all: deps
 
 deps: | $(HEREROCKS) $(BUSTED) $(LUAROCKS_DEPS)
@@ -53,43 +56,46 @@ coverage_dir:
 
 test: test_lua test_nvim
 
-test_lua: $(BUSTED) $(LUAROCKS_DEPS) $(LUV) coverage_dir
+test_lua: $(BUSTED) $(LUAROCKS_DEPS) $(LUV) coverage_dir 	## test using Lua
 	@echo Test with $(LUA_VERSION) tag=$(BUSTED_TAG) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
 		lua spec/init.lua --coverage --helper=$(BUSTED_HELPER) --run=$(BUSTED_TAG) -o htest spec/tests
 
 
-test_nvim: $(BUSTED) $(LUV) $(NLUA) coverage_dir
+test_nvim: $(BUSTED) $(LUV) $(NLUA) coverage_dir	## test using Neovim
 	@echo Test with $(LUA_VERSION) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
 	busted --lua="$(NLUA)" --helper=spec/init.lua --run=$(BUSTED_TAG) -o htest spec/tests
 
-coverage_clean:
+coverage_clean: ## remove coverage data
 	rm -fr $(COVERAGE)
 	mkdir $(COVERAGE)
 
-coverage: coverage_clean coverage_dir
+coverage: coverage_clean coverage_dir ## run coverage
 	@echo coverage with $(LUA_VERSION) tag=$(BUSTED_TAG) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
 		busted --coverage --lua=$(TARGET_DIR)/bin/lua --helper=$(BUSTED_HELPER) --run=$(BUSTED_TAG) spec/tests
 
-publish: $(BUSTED) $(LUV) $(NLUA) coverage_dir
+publish: $(BUSTED) $(LUV) $(NLUA) coverage_dir ## publish rocks
 	@echo coverage with $(LUA_VERSION) tag=$(BUSTED_TAG) ......
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
 		luarocks pack lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec && \
 		luarocks upload lua-nvl-$(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION).rockspec --api-key=$(LUAROCKS_API_KEY)
 
-new-rocks-version: 
+new-rocks-version: ## create a new rocks version
 	./.new-rocks-version
 
-rocks-version: 
+rocks-version: ## get the current rocks version
 	$(info $(ROCKS_PACKAGE_VERSION)-$(ROCKS_PACKAGE_REVISION))
 
-sync-registry:
+sync-registry: ## synchronize package registry .nvl_packages.lua 
 	@echo synchronizing .nvl_packages 
 	@$(HEREROCKS_ACTIVE) && eval $$(luarocks path) && \
  	lua -e 'package.path = os.getenv("PWD") .. "/lua/?.lua;" .. package.path; require("nvl.core.package.registry").sync()'
 
+pull-subtrees: ## pull latest version of all subtrees
+	git subtree pull --prefix=packages/lua-nvl-utils lua-nvl-utils main --squash
+	git subtree pull --prefix=packages/lua-nvl-inspect lua-nvl-inspect main --squash
 
 $(HEREROCKS):
 	mkdir -p $(DEPS)
