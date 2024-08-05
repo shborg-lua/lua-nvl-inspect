@@ -1,18 +1,18 @@
----@class nvl.Loader
+---@class nvl.core.loader.module_exports
 local loader = {}
 
----@alias nvl.accessor_target {f:fun(...:any):any}
+---@alias nvl.core.loader.accessor_target {f:fun(...:any):any}
 
----@class nvl.AccessorRegistry
----@field map table<string,nvl.accessor_target>
+---@class nvl.core.loader.AccessorRegistry
+---@field map table<string,nvl.core.loader.accessor_target>
 
----@class nvl.PackageRegistry
----@field discovered table<string,nvl.Package>
----@field loaded table<string,nvl.Package>
+---@class nvl.core.loader.PackageRegistry
+---@field discovered table<string,nvl.core.package.Package>
+---@field loaded table<string,nvl.core.package.Package>
 
 ---@class _nvl
----@field packages nvl.PackageRegistry the package registry
----@field accessor nvl.AccessorRegistry the accessor registry
+---@field packages nvl.core.loader.PackageRegistry the package registry
+---@field accessor nvl.core.loader.AccessorRegistry the accessor registry
 
 ---@class nvl
 ---@field _ _nvl internal
@@ -30,17 +30,16 @@ local nvl = {
 	},
 }
 
-local D = function(...)
-	if vim then
-		vim.print(...)
-	else
-		P(...)
-	end
-end
+-- local D = function(...)
+-- 	if vim then
+-- 		vim.print(...)
+-- 	else
+-- 		P(...)
+-- 	end
+-- end
 
 local nvl_mt = {}
 nvl_mt.__index = function(t, k)
-	-- D({ ">>>>>>>>>>>>>>>>>>>> nvl_mt.__index", k = k })
 	local v = rawget(t, k)
 	if v then
 		return v
@@ -62,20 +61,12 @@ function nvl.init()
 end
 
 ---
----@param pkg nvl.Package
+---@param pkg nvl.core.package.Package
 function nvl.add_package(pkg)
-	-- D({
-	-- 	">>>>>>>>>> nvl.add_package",
-	-- 	pkg = pkg,
-	-- })
 	nvl._.packages.discovered[pkg.name] = pkg
 	nvl._.accessor.map[pkg.name] = {
 		f = function()
 			nvl._.packages.discovered[pkg.name] = nil
-			-- D({
-			-- 	">>>>>>>>>> inside accessor func nvl.add_package.f()",
-			-- 	pkg = pkg,
-			-- })
 			local v = pkg:load()
 			nvl._.packages.loaded[pkg.name] = v
 			return v
@@ -83,6 +74,8 @@ function nvl.add_package(pkg)
 	}
 end
 
+---comment
+---@param rocks_trees nvl.core.rocks.RocksTrees
 local function create_packages(rocks_trees)
 	local Package = require("nvl.core.package").Package
 
@@ -106,7 +99,6 @@ function loader.entrypoint()
 	local runtime = require("nvl.core.runtime")
 	local rocks = require("nvl.core.rocks")
 
-	print(string.format("loader.entrypoint development.enabled=%s", config.development.enabled))
 	local tree_root
 	local package_root
 	if vim then

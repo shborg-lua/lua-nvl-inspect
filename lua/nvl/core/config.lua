@@ -1,14 +1,14 @@
----@class nvl.Config: nvl.ConfigOptions
-local M = {}
+---@class nvl.core.config.Config: nvl.core.config.ConfigOptions
+local Config = {}
 
 local utils = require("nvl.core.utils")
----@class nvl.config.mod_info
+---@class nvl.core.config.mod_info
 ---@field [1] string The module name to import from
 ---@field [2]? string The symbol inside the module
 
----@class nvl.ConfigOptions
+---@class nvl.core.config.ConfigOptions
 ---@field development {enabled:boolean}
-local defaults = (function(projects_root)
+local defaults = (function()
 	return {
 		__class = { name = "nvl.config" },
 		development = {
@@ -18,7 +18,7 @@ local defaults = (function(projects_root)
 		runtime = require("nvl.core.runtime"),
 
 		exports = {
-			--- @type table<string,nvl.config.mod_info>
+			--- @type table<string,nvl.core.config.mod_info>
 			globals = {},
 
 			enable_global = true,
@@ -26,22 +26,22 @@ local defaults = (function(projects_root)
 	}
 end)()
 
----@type nvl.ConfigOptions
+---@type nvl.core.config.ConfigOptions
 local options
 
----@param opts? nvl.ConfigOptions
-function M.setup(opts)
+---@param opts? nvl.core.config.ConfigOptions
+function Config.setup(opts)
 	options = utils.tbl_deep_extend("force", defaults, opts or {}) or {}
 end
 
-setmetatable(M, {
+setmetatable(Config, {
 	__index = function(_, key)
 		if options == nil then
 			return utils.deepcopy(defaults)[key]
 		end
-		---@cast options nvl.Config
+		---@cast options nvl.core.config.Config
 		return options[key]
 	end,
 })
 
-return M
+return Config

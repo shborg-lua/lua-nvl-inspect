@@ -76,7 +76,7 @@ function Registry.update()
 end
 
 function Registry.packages()
-	return utils.factory.dict_iter(Registry._packages)
+	return utils.table.spairs(Registry._packages)
 end
 
 -- Function to write data to a file in the specified format

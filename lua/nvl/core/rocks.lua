@@ -4,7 +4,6 @@ local utils = require("nvl.core.utils")
 local runtime = require("nvl.core.runtime")
 
 ---@class nvl.core.rocks.RocksTrees
----@field iter nvl.types.dict_iterator
 local RocksTrees = {
 
 	---@type table<string,nvl.core.rocks.Tree>
@@ -21,7 +20,6 @@ local Tree = {} ---@diagnostic disable-line: missing-fields
 ---@field build? string
 
 ---@class nvl.core.rocks.PathRegistry
----@field registerd string[]
 ---@field discovered table<string,nvl.core.rocks.DiscoveredPackage>
 ---
 ---@class nvl.core.rocks._Tree
@@ -46,6 +44,7 @@ M.Tree = Tree
 ---@param name string a name for the instance
 ---@param path string the local path to the tree
 ---@param opts nvl.core.rocks.TreeOptions
+---@return nvl.core.rocks.Tree
 function Tree:new(name, path, opts)
 	opts = opts or {}
 	assert(type(name) == "string", "nvl.core.rocks.Tree.new: name must be a string")
@@ -65,23 +64,25 @@ function Tree:new(name, path, opts)
 	return setmetatable(obj, self)
 end
 
+---comment
+---@return string
 function Tree:lpath()
 	local s = self.path .. "/lua/?.lua;"
 	s = s .. self.path .. "/lua/?/init.lua"
 	return s
 end
 
--- -- Function to add a directory to package.path
--- function Tree:inject_lua_path()
--- 	package.path = table.concat(self._.packages.lua_path, ";") .. package.path
--- end
---
+---comment
+---@return string?
 function Tree.lua_version()
 	local version = _VERSION
 	local digits = version:match("%d+%.%d+")
 	return digits
 end
 
+---comment
+---@param path string
+---@return boolean
 function Tree.is_dir(path)
 	assert(type(path) == "string", "runtime.is_dir: path must be a string")
 	local f = io.open(path, "r")
@@ -93,6 +94,10 @@ function Tree.is_dir(path)
 	return (code == 21) or (err ~= nil)
 end
 
+---comment
+---@param path string
+---@param kind "file"|"directory"
+---@return boolean
 function Tree.path_exists(path, kind)
 	assert(type(path) == "string", "runtime.is_dir: path must be a string")
 	assert(kind == "file" or kind == "directory", "runtime.is_dir: kind must be 'file' or 'directory'")
@@ -110,6 +115,9 @@ function Tree.path_exists(path, kind)
 end
 
 -- Function to match the pattern with the Lua version
+---comment
+---@param path string
+---@return string[]?
 function Tree.match_nvl_dir(path)
 	local version_digits = Tree.lua_version()
 	local pattern = "(.*%/lua%-nvl%-(%w+)%/share%/lua%/" .. version_digits .. ")"
@@ -117,9 +125,12 @@ function Tree.match_nvl_dir(path)
 end
 
 function Tree:packages()
-	return utils.factory.dict_iter(self._.packages)
+	return utils.table.spairs(self._.packages)
 end
 
+---comment
+---@param file string
+---@param path string
 function Tree:add(file, path)
 	local pkg = {
 		name = file,
@@ -132,35 +143,10 @@ function Tree:add(file, path)
 	self._.packages[file] = pkg
 end
 
-function Tree.luarocks_factory_(opts)
-	opts = opts or {}
-
-	local Registry = require("nvl.core.package.registry")
-
-	local kind = opts.kind or "lazy.nvim"
-
-	local function lazy_nvim()
-		local lazy_rocks = runtime.joinpath(vim.fn.stdpath("data"), "lazy-rocks")
-
-		for pack_name, _ in Registry.packages() do
-			local rt = Tree("repository: " .. pack_name, runtime.joinpath(lazy_rocks, "lua-nvl-" .. pack_name))
-			local path = rt.path .. "/share/lua/5.1/nvl/" .. pack_name
-			rt:add(pack_name, path)
-			RocksTrees._trees[rt.name] = rt
-		end
-	end
-
-	-- for path in string.gmatch(package.path, "([^;]+)") do
-	-- 	runtime.package.path.register(path)
-	-- end
-	--
-	if opts.kind == "lazy_nvim" then
-		return lazy_nvim()
-	end
-
-	return RocksTrees
-end
-
+---comment
+---@param tree_root string
+---@param package_root string
+---@return nvl.core.rocks.RocksTrees
 function Tree.luarocks_factory(tree_root, package_root)
 	tree_root = tree_root or runtime.joinpath(utils.git_root(), "packages")
 	package_root = package_root or "/lua/nvl/"
@@ -182,7 +168,7 @@ function RocksTrees.inject_lpath()
 end
 
 function RocksTrees.iter()
-	return utils.factory.dict_iter(RocksTrees._trees)
+	return utils.table.spairs(RocksTrees._trees)
 end
 M.RocksTrees = RocksTrees
 M.Tree = Tree

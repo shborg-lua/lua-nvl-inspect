@@ -7,7 +7,7 @@
 ---
 ---
 ---
----@class nvl.core.package.exports
+---@class nvl.core.package.module_exports
 local M = {}
 
 M.Package = require("nvl.core.package.package")

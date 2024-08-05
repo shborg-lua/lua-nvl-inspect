@@ -1,10 +1,10 @@
+---@class nvl.core.utils.module_exports
+---@field factory table
+---@field table table
+---@field NIL string
 local M = {}
 
 local uv = vim and vim.uv or require("luv")
-
----@nodoc
----@diagnostic disable-next-line: lowercase-global
-local M = {}
 
 M.NIL = "\0"
 
@@ -19,7 +19,7 @@ M.table = {}
 ---@param t table<T, any> (table) Table
 ---@return T[] : List of keys
 function M.table.keys(t)
-	assert(type(t) == "table", "M.table.tbl_keys: t must be a table")
+	assert(type(t) == "table", "M.table.keys: t must be a table")
 	--- @cast t table<any,any>
 
 	local keys = {}
@@ -36,7 +36,7 @@ end
 ---@param t table<any, T> (table) Table
 ---@return T[] : List of values
 function M.table.values(t)
-	assert(type(t) == "table", "M.table.tbl_values: t must be a table")
+	assert(type(t) == "table", "M.table.values: t must be a table")
 
 	local values = {}
 	for _, v in
@@ -47,43 +47,33 @@ function M.table.values(t)
 	return values
 end
 
-M.factory = {}
+--- Enumerates key-value pairs of a table, ordered by key.
+---
+---@see Based on https://github.com/premake/premake-core/blob/master/src/base/table.lua
+---
+---@generic T: table, K, V
+---@param t T Dict-like table
+---@return fun(table: table<K, V>, index?: K):K, V # |for-in| iterator over sorted keys and their values
+---@return T
+function M.table.spairs(t)
+	assert(type(t) == "table", "M.table.spairs: t must be a table")
+	--- @cast t table<any,any>
 
----comment
----@return nvl.types.list_iterator
-function M.factory.list_iter()
-	return function(t)
-		local i = 0
-		local n = #t
-		return function()
-			i = i + 1
-			if i <= n then
-				return t[i]
-			end
-		end
+	-- collect the keys
+	local keys = {}
+	for k in pairs(t) do
+		table.insert(keys, k)
 	end
-end
-
----comment
----@generic K
----@generic V
----@param t table<K,V>
----@return nvl.types.dict_iterator
-function M.factory.dict_iter(t)
-	local keys = M.table.keys(t)
 	table.sort(keys)
-	local k
-	local v
+
+	-- Return the iterator function.
 	local i = 0
-	local n = #keys
 	return function()
 		i = i + 1
-		k = keys[i]
-		v = t[k]
-		if i <= n then
-			return k, v
+		if keys[i] then
+			return keys[i], t[keys[i]]
 		end
-	end
+	end, t
 end
 
 ---@generic T

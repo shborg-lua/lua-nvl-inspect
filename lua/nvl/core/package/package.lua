@@ -1,25 +1,26 @@
-local Package = {}
+---@type nvl.core.package.Package
+local Package = {} ---@diagnostic disable-line: missing-fields
 
 local accessor = {}
 
 ---comment
----@param self nvl.Package
+---@param self nvl.core.package.Package
 ---@return string
 function accessor.module_root_path(self)
 	assert(type(self) == "table", "accessor.module_root_path: self must be a table")
 	return self.path .. "/lua/nvl/" .. self.name
 end
 
----@alias nvl.package.new_opts {modules:nvl.PackageModules}
+---@alias nvl.package.new_opts {modules:nvl.core.package.PackageModules}
 ---
----@class nvl.PackageModules
+---@class nvl.core.package.PackageModules
 ---@field build? table
 ---@field config? table
 
----@class nvl.Package
+---@class nvl.core.package.Package
 ---@field name string the name of the package
 ---@field path string the file path of the package
----@field modules nvl.PackageModules
+---@field modules nvl.core.package.PackageModules
 ---@overload fun(name:string,path:string,opts:nvl.package.new_opts?)
 Package = setmetatable({}, {
 	__call = function(t, ...)
@@ -53,7 +54,7 @@ end
 ---@param name string module name
 ---@param path string module repository path
 ---@param opts? nvl.package.new_opts
----@return nvl.Package
+---@return nvl.core.package.Package
 function Package:new(name, path, opts)
 	opts = opts or { modules = {} }
 

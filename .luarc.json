@@ -22,7 +22,8 @@
     "stub",
     "spy",
     "insulate",
-    "expose"
+    "expose",
+    "LazyVim"
   ],
   "diagnostics.severity": {
     "undefined-field": "Hint"
@@ -32,5 +33,11 @@
   "type.weakUnionCheck": true,
   "workspace.library": [
     "spec/helpers/types.lua"
+  ],
+  "workspace.ignoreDir": [
+    "/scratch",
+    "/.tmp",
+    "/build/*/share/lua/*/nvl",
+    "/packages"
   ]
 }

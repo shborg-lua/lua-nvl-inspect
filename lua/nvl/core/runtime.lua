@@ -2,14 +2,16 @@ local utils = require("nvl.core.utils")
 local uv = vim and vim.uv or require("luv")
 
 --- @class nvl.Runtime
---- @field os_info nvl.OperatingSystem The operating system that Neorg is currently running under.
+--- @field os_info nvl.core.runtime.OperatingSystem The operating system that Neorg is currently running under.
 --- @field pathsep "\\"|"/" The operating system that Neorg is currently running under.
+--- @field lua_version string The running Lua version
 local runtime = {}
 
 local os_uname = uv.os_uname ---@diagnostic disable-line: undefined-field
+--- @alias nvl.core.runtime.OperatingSystem "linux"|"mac"|"windows"|"wsl"|"wsl2"|"bsd"
 
 ---Gets the current operating system.
----@return nvl.OperatingSystem
+---@return nvl.core.runtime.OperatingSystem
 local function get_os_info()
 	local os = os_uname().sysname:lower()
 

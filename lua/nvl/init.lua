@@ -1,5 +1,4 @@
 --- @class nvl.exports
-local M = {}
 local nvl
 
 local D = function(...)
@@ -10,7 +9,7 @@ local D = function(...)
 	end
 end
 ---comment
----@param options nvl.ConfigOptions
+---@param options nvl.core.config.ConfigOptions
 ---@return unknown
 local function setup(options)
 	require("nvl.core.setup")(options)
